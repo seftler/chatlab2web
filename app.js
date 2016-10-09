@@ -7,7 +7,7 @@ var appEnv = cfenv.getAppEnv();
 var httport = process.env.PORT || 1337;
 
 app.use(express.static(__dirname + '/public'));
-app.use('/socket.io', express.static(__dirname + '/node_modules/socket.io-client'));
+//app.use('/socket.io', express.static(__dirname + '/node_modules/socket.io-client'));
 
 var users = new Object();
 var online = '\n';

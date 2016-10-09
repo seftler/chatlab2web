@@ -1,0 +1,63 @@
+<!doctype html>
+<html>
+  <head>
+    <title>CHAT v1.0</title>
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      body { font: 13px Helvetica, Arial; }
+      form { background: #000; padding: 3px; position: fixed; bottom: 0; width: 100%; }
+      form input { border: 0; padding: 10px; width: 90%; margin-right: .5%; }
+      form button { width: 9%; background: rgb(130, 224, 90); border: none; padding: 10px; }
+      #messages { list-style-type: none; margin: 0; padding: 0; }
+      #messages li { padding: 5px 10px; }
+      #messages li:nth-child(odd) { background: #eee; }
+    </style>
+  </head>
+ 
+    
+  <body>
+    <ul id="messages"></ul>
+    <form action="">
+      <input id="m" autocomplete="off" /><button>Отправить</button>
+    </form>
+	<script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
+	<script src="http://code.jquery.com/jquery-1.11.1.js"></script>
+	<script>
+		var socket = io();
+		var now = new Date();
+		var newbie = true;
+		$('form').submit(function()
+		{
+			var text = $("#m").val();
+			if (text.length > 0)
+			{
+				if (newbie == true)
+				{
+					socket.emit('registration', text);
+					$('#m').val('');
+				}
+				else
+				{
+					if (text != '/online')
+					$('#messages').append($('<li>').text('||' + now + '||' + ' Вы: ' + text));
+					$('#m').val('');
+					socket.emit('user message', text);
+				}
+				newbie = false;
+			}
+			return false;
+		});	
+		
+		socket.on('chat message', function(msg)
+		{
+			$('#messages').append($('<li>').text('||' + now + '||' + ' ' + msg));
+		});
+		
+
+		socket.on('system message', function(msg)
+		{
+			$('#messages').append($('<li>').text('CHATBOT ' + '||' + now + '||' + ' : ' + msg).css('color', 'green'));
+		});	
+    </script>
+  </body>
+</html>
